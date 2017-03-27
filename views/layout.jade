@@ -1,0 +1,40 @@
+doctype html
+html
+  head
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    title= title
+    link(rel='stylesheet', href='/static/stylesheets/bootstrap.min.css')
+    link(rel='stylesheet', href='/static/stylesheets/bootstrap-responsive.min.css')
+    link(rel='stylesheet', href='/static/stylesheets/style.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js')
+    script(src='/static/javascripts/bootstrap.min.js')
+  body
+    ul.nav.nav-tabs
+      if activeTabName == "home"
+        li.active(role="presentation")
+          a(href="/") Home
+      else
+        li(role="presentation")
+          a(href="/") Home
+      if activeTabName == "liste"
+        li.active(role="presentation")
+          a(href="/items/listing_items") Liste
+      else
+        li(role="presentation")
+          a(href="/items/listing_items") Liste
+      if activeTabName == "ajout_item"
+        li.active(role="presentation")
+          a(href="/items/item_create") Ajout Item
+      else
+        li(role="presentation")
+          a(href="/items/item_create") Ajout Item
+      if activeTabName == "ajout_category"
+        li.active(role="presentation")
+          a(href="/items/add_categorie") Ajout Categorie
+      else
+        li(role="presentation")
+          a(href="/items/add_categorie") Ajout Categorie
+              
+    block content

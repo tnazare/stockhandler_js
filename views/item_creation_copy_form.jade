@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  div.panel.panel-default
+    div.panel-heading
+      h3.panel-title #{itemName}
+    div.panel-body
+      dl.dl-horizontal
+        dt.col-md-2 Catégorie
+        dd.col-md-4 #{foodCategoryName}
+      form.form-horizontal(action='./item_create_copy_commit',method='post')
+        input.invisible.form-control(type="hidden" name="copyId" value="#{copyId}") 
+        div.form-group.col-xs-12
+          div.btn-group(data-toggle="buttons")
+            label.btn.active 
+              span(class="glyphicon glyphicon-arrow-up" aria-hidden="true")
+                input(type="radio" name="up" id="up" autocomplete="off" data-toggle="button")
+            label.btn 
+              span(class="glyphicon glyphicon-arrow-down" aria-hidden="true")
+                input(type="radio" name="down" id="down" autocomplete="off" data-toggle="button")
+        div.form-group.col-xs-12
+          select.form-control(name="count")
+            option(selected) 1
+            option 2
+            option 3
+            option 4
+            option 5
+        div.form-group.col-xs-12
+          button.btn.btn-default(type="submit") Ajouter
+  

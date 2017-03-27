@@ -1,0 +1,42 @@
+extends layout
+
+block content
+  div.panel.panel-default
+      form.form-horizontal(action='./item_create_copy_commit',method='post')
+        input.invisible.form-control(type="hidden" name="copyId" value="#{copyId}") 
+        div.form-group
+          div.col-xs-3
+            label.control-label(for="itemName") Nom
+          div.col-xs-9
+            input.form-control(type="text" id="itemName" placeholder="Nom du produit")
+        div.form-group
+          div.col-xs-3
+            label.control-label(for="foodCategory") Catégorie
+          div.col-xs-9
+            select.form-control(name="foodCategory")
+              for foodCategory in foodCategories
+                option(id="#{foodCategory._id}" selected) #{foodCategory.name}
+        div.form-group
+          div.col-xs-3
+            label.control-label(for="buttons") Lieu
+          div.btn-group.col-xs-9(data-toggle="buttons")
+            label.btn.active 
+              span(class="glyphicon glyphicon-arrow-up" aria-hidden="true")
+                input(type="radio" name="up" id="up" autocomplete="off" data-toggle="button")
+            label.btn 
+              span(class="glyphicon glyphicon-arrow-down" aria-hidden="true")
+                input(type="radio" name="down" id="down" autocomplete="off" data-toggle="button")
+        div.form-group
+          div.col-xs-3
+            label.control-label(for="buttons") Nombre
+          div.col-xs-9
+            select.form-control(name="count")
+              option(selected) 1
+              option 2
+              option 3
+              option 4
+              option 5
+        div.form-group
+          div.col-xs-3.col-xs-offset-3
+            button.btn.btn-default(type="submit") Ajouter
+  
