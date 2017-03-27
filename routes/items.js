@@ -2,7 +2,7 @@ var express = require('express');
 var  co = require('co');
 var url = require('url');
 var router = express.Router();
-var MongoClient = require('mongodb').MongoClient;
+
 var {ObjectId} = require('mongodb');
 var copyItem = function(itemToCopy, location){
 	return {
