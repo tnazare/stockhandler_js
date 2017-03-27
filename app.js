@@ -54,7 +54,6 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-console.log("process.env.MONGOLAB_URI = " + process.env.MONGODB_URI);
 // Connect to the database before starting the application server.
 mongodb.MongoClient.connect(process.env.MONGODB_URI, function(err, database) {
   if (err) {
@@ -68,4 +67,7 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI, function(err, database) {
 });
 
 
-module.exports = app;
+module.exports = {
+  "application": app,
+  "db": db
+};
