@@ -25,7 +25,7 @@ block content
           td.col-md-4
             a.btn.btn-success(href="./item_create_copy?copyId=#{item._id}&refererUrl=#{encodeURI('./item_group_details?itemName='+itemName)}" role="button")
               span.glyphicon.glyphicon-plus(aria-hidden="true")
-            a.btn.btn-danger(href="./item_delete?_id=#{item._id}&refererUrl=#{encodeURI('./item_group_details?itemName='+itemName)}" data-method="delete" role="button")
+            a.btn.btn-danger(href="./item_delete?_id=#{item._id}&itemName=#{encodeURI(itemName)}&refererUrl=#{encodeURI('./item_group_details?itemName='+itemName)}" data-method="delete" role="button")
               span.glyphicon.glyphicon-minus(aria-hidden="true")
       else
         tr

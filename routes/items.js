@@ -214,12 +214,28 @@ router.get('/search', function(req, res, next) {
 router.get('/item_delete', function(req, res, next) {
 	var url_parts = url.parse(req.url, true);
 	var query = url_parts.query;
-	var objectId = new ObjectId(query._id)
+	var objectId = new ObjectId(query._id);
+	var itemName = query.itemName;
 	console.log(JSON.stringify(query))
 	mongo_database.get().collection('Item').deleteOne({
 		"_id": objectId
 	}, function(err, result) {
-		res.redirect(query.refererUrl);
+		mongo_database.get().collection('Item').aggregate([{
+			$match: {
+				"name": {
+					$regex: itemName,
+					$options: 'i'
+				}
+			}
+		}]).toArray(function(err, items) {
+			if (items.length > 0) {
+				res.redirect(query.refererUrl);
+			} else {
+				res.redirect('./listing_items');
+			}
+		});
+
+
 	});
 });
 
@@ -237,7 +253,7 @@ router.post('/item_create_commit', function(req, res, next) {
 
 	var location = req.body["up"] != undefined ? "up" : "down";
 	var count = parseInt(req.body["count"]);
-	var foodCategoryId = req.body["foodCategory"];
+	var foodCategoryId = new ObjectId(req.body["foodCategory"]);
 	var itemName = req.body["itemName"];
 	var unit = req.body["unit"];
 	mongo_database.get().collection('FoodCategory').findOne({
@@ -262,27 +278,6 @@ router.post('/item_create_commit', function(req, res, next) {
 			res.redirect('./listing_items');
 		});
 	});
-	// mongo_database.get().collection('Item').findOne({
-	// 	"_id": copyId
-	// }, function(err, itemToCopy) {
-	// 	console.log("itemToCopy = " + JSON.stringify(itemToCopy));
-	// 	var itemsToBeInserted = [];
-	// 	while (count > 0) {
-	// 		var itemToAdd = copyItem(itemToCopy, location);
-	// 		console.log("itemToAdd = " + JSON.stringify(itemToAdd));
-	// 		itemsToBeInserted.push(itemToAdd);
-	// 		count--;
-	// 	}
-	// 	mongo_database.get().collection('Item').insertMany(itemsToBeInserted, function(err, result) {
-	// 		res.redirect('./listing_items');
-	// 	});
-	// });
-	// mongo_database.get().collection('Item').find().toArray(function(err, foodCategories) {
-	// 	res.render('item_creation_form', {
-	// 		"activeTabName": "ajout_item",
-	// 		"foodCategories": foodCategories
-	// 	});
-	// });
 });
 
 
