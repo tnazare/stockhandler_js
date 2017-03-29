@@ -11,8 +11,7 @@ var app;
 var index = require('./routes/index');
 var items = require('./routes/items');
 var item = require('./routes/item');
-var storageAreas = require('./routes/storageAreas');
-var storageArea = require('./routes/storageArea');
+var foodCategories = require('./routes/foodcategories');
 
 
 
@@ -35,8 +34,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')))
 app.use('/', index);
 app.use('/items', items);
 app.use('/item', item);
-app.use('/storageAreas', storageAreas);
-app.use('/storageArea', storageArea);
+app.use('/foodcategories', foodCategories);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

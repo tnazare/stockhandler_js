@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  div.panel.panel-default
+      form.form-horizontal(action='./foodcategory_create_commit',method='post')
+        div.form-group
+          div.col-xs-3
+            label.control-label(for="categoryName") Nom
+          div.col-xs-9
+            input.form-control(type="text" name="categoryName" placeholder="Nom de la catégorie")
+        div.form-group
+          div.col-xs-3.col-xs-offset-3
+            button.btn.btn-default(type="submit") Ajouter

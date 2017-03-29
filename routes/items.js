@@ -66,7 +66,6 @@ router.get('/listing_items', function(req, res, next) {
 	});
 });
 
-
 router.get('/item_group_details', function(req, res, next) {
 	var itemName = req.query.itemName;
 	if (!itemName) {
@@ -97,7 +96,6 @@ router.get('/item_group_details', function(req, res, next) {
 			"foodCategoryName": items[0].foodCategoryName
 		});
 	});
-
 });
 
 router.get('/item_create_copy', function(req, res, next) {
@@ -128,7 +126,6 @@ router.get('/item_create_copy', function(req, res, next) {
 			"copyId": copyId
 		});
 	});
-
 });
 
 router.post('/item_create_copy_commit', function(req, res, next) {
@@ -233,6 +230,59 @@ router.get('/item_create', function(req, res, next) {
 			"foodCategories": foodCategories
 		});
 	});
+});
+
+router.post('/item_create_commit', function(req, res, next) {
+	console.log("req.body = " + JSON.stringify(req.body));
+
+	var location = req.body["up"] != undefined ? "up" : "down";
+	var count = parseInt(req.body["count"]);
+	var foodCategoryId = req.body["foodCategory"];
+	var itemName = req.body["itemName"];
+	var unit = req.body["unit"];
+	mongo_database.get().collection('FoodCategory').findOne({
+		"_id": foodCategoryId
+	}, function(err, foodCategory) {
+		var itemsToBeInserted = [];
+		while (count > 0) {
+			var itemToAdd = {
+				"_id": ObjectId(),
+				"location": location,
+				"name": itemName,
+				"unit": unit,
+				"foodCategory": foodCategory,
+				"additionDate": new Date(),
+				"deletetionDate": null
+			};
+			console.log("itemToAdd = " + JSON.stringify(itemToAdd));
+			itemsToBeInserted.push(itemToAdd);
+			count--;
+		}
+		mongo_database.get().collection('Item').insertMany(itemsToBeInserted, function(err, result) {
+			res.redirect('./listing_items');
+		});
+	});
+	// mongo_database.get().collection('Item').findOne({
+	// 	"_id": copyId
+	// }, function(err, itemToCopy) {
+	// 	console.log("itemToCopy = " + JSON.stringify(itemToCopy));
+	// 	var itemsToBeInserted = [];
+	// 	while (count > 0) {
+	// 		var itemToAdd = copyItem(itemToCopy, location);
+	// 		console.log("itemToAdd = " + JSON.stringify(itemToAdd));
+	// 		itemsToBeInserted.push(itemToAdd);
+	// 		count--;
+	// 	}
+	// 	mongo_database.get().collection('Item').insertMany(itemsToBeInserted, function(err, result) {
+	// 		res.redirect('./listing_items');
+	// 	});
+	// });
+	// mongo_database.get().collection('Item').find().toArray(function(err, foodCategories) {
+	// 	res.render('item_creation_form', {
+	// 		"activeTabName": "ajout_item",
+	// 		"foodCategories": foodCategories
+	// 	});
+	// });
 });
 
 
