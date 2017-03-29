@@ -2,11 +2,12 @@ var express = require('express');
 var co = require('co');
 var url = require('url');
 var router = express.Router();
-var db = require('../app').MongoClient;
+var mongo_database = require('../mongo_database');
 
 var {
 	ObjectId
 } = require('mongodb');
+
 var copyItem = function(itemToCopy, location) {
 	return {
 		"_id": ObjectId(),
@@ -21,49 +22,43 @@ var copyItem = function(itemToCopy, location) {
 
 /* GET all items listing. */
 router.get('/', function(req, res, next) {
-	co(function*() {
-		var col = db.collection('Item');
-
-		var items = yield col.find({}).toArray();
+	mongo_database.get().collection('Item').find().toArray(function(err, items) {
 		res.status(200).json(items);
 	});
 });
 
 router.get('/listing_items', function(req, res, next) {
-	co(function*() {
-		var col = db.collection('Item');
-
-		var items = yield col.aggregate([{
-			$group: {
-				_id: "$name",
-				count: {
-					$sum: 1
-				},
-				oldestAdditionDate: {
-					$min: "$additionDate"
-				},
-				youngestAdditionDate: {
-					$max: "$additionDate"
+	mongo_database.get().collection('Item').aggregate([{
+		$group: {
+			_id: "$name",
+			count: {
+				$sum: 1
+			},
+			oldestAdditionDate: {
+				$min: "$additionDate"
+			},
+			youngestAdditionDate: {
+				$max: "$additionDate"
+			}
+		}
+	}, {
+		$project: {
+			name: "$_id",
+			oldestAdditionDate: {
+				$dateToString: {
+					format: "%Y-%m-%d",
+					date: "$oldestAdditionDate"
 				}
-			}
-		}, {
-			$project: {
-				name: "$_id",
-				oldestAdditionDate: {
-					$dateToString: {
-						format: "%Y-%m-%d",
-						date: "$oldestAdditionDate"
-					}
-				},
-				youngestAdditionDate: {
-					$dateToString: {
-						format: "%Y-%m-%d",
-						date: "$youngestAdditionDate"
-					}
-				},
-				count: "$count"
-			}
-		}]).toArray();
+			},
+			youngestAdditionDate: {
+				$dateToString: {
+					format: "%Y-%m-%d",
+					date: "$youngestAdditionDate"
+				}
+			},
+			count: "$count"
+		}
+	}]).toArray(function(err, items) {
 		res.render('listing_items', {
 			"items": items,
 			"activeTabName": "liste"
@@ -71,66 +66,61 @@ router.get('/listing_items', function(req, res, next) {
 	});
 });
 
-router.get('/item_group_details', function(req, res, next) {
-	co(function*() {
-		var itemName = req.query.itemName;
-		if (!itemName) {
-			res.status(404);
-		}
-		var col = db.collection('Item');
 
-		var items = yield col.aggregate([{
-			$match: {
-				"name": {
-					$regex: itemName,
-					$options: 'i'
+router.get('/item_group_details', function(req, res, next) {
+	var itemName = req.query.itemName;
+	if (!itemName) {
+		res.status(404);
+	}
+	mongo_database.get().collection('Item').aggregate([{
+		$match: {
+			"name": {
+				$regex: itemName,
+				$options: 'i'
+			}
+		}
+	}, {
+		$project: {
+			"additionDate": {
+				$dateToString: {
+					format: "%Y-%m-%d",
+					date: "$additionDate"
 				}
-			}
-		}, {
-			$project: {
-				"additionDate": {
-					$dateToString: {
-						format: "%Y-%m-%d",
-						date: "$additionDate"
-					}
-				},
-				"location": "$location",
-				"foodCategoryName": "$foodCategory.name"
-			}
-		}]).toArray();
+			},
+			"location": "$location",
+			"foodCategoryName": "$foodCategory.name"
+		}
+	}]).toArray(function(err, items) {
 		res.render('item_group_details', {
 			"items": items,
 			"itemName": itemName,
 			"foodCategoryName": items[0].foodCategoryName
 		});
 	});
+
 });
 
 router.get('/item_create_copy', function(req, res, next) {
-	co(function*() {
-		var copyId = new ObjectId(req.query.copyId);
-		console.log("copyId = " + copyId)
-		var col = db.collection('Item');
-
-		var items = yield col.aggregate([{
-			$match: {
-				"_id": {
-					$eq: copyId
+	var copyId = new ObjectId(req.query.copyId);
+	mongo_database.get().collection('Item').aggregate([{
+		$match: {
+			"_id": {
+				$eq: copyId
+			}
+		}
+	}, {
+		$project: {
+			"additionDate": {
+				$dateToString: {
+					format: "%Y-%m-%d",
+					date: "$additionDate"
 				}
-			}
-		}, {
-			$project: {
-				"additionDate": {
-					$dateToString: {
-						format: "%Y-%m-%d",
-						date: "$additionDate"
-					}
-				},
-				"location": "$location",
-				"foodCategoryName": "$foodCategory.name",
-				"name": "$name"
-			}
-		}]).toArray();
+			},
+			"location": "$location",
+			"foodCategoryName": "$foodCategory.name",
+			"name": "$name"
+		}
+	}]).toArray(function(err, items) {
 		res.render('item_creation_copy_form', {
 			"items": items[0],
 			"itemName": items[0].name,
@@ -138,21 +128,19 @@ router.get('/item_create_copy', function(req, res, next) {
 			"copyId": copyId
 		});
 	});
+
 });
 
 router.post('/item_create_copy_commit', function(req, res, next) {
-	co(function*() {
-		var location = req.body["up"] != undefined ? "up" : "down";
-		var count = parseInt(req.body["count"]);
-		var copyId = new ObjectId(req.body["copyId"]);
-		console.log("location = " + location);
-		console.log("count = " + count);
-		console.log("copyId = " + copyId);
-		var col = db.collection('Item');
-
-		var itemToCopy = yield col.findOne({
-			"_id": copyId
-		});
+	var location = req.body["up"] != undefined ? "up" : "down";
+	var count = parseInt(req.body["count"]);
+	var copyId = new ObjectId(req.body["copyId"]);
+	console.log("location = " + location);
+	console.log("count = " + count);
+	console.log("copyId = " + copyId);
+	mongo_database.get().collection('Item').findOne({
+		"_id": copyId
+	}, function(err, itemToCopy) {
 		console.log("itemToCopy = " + JSON.stringify(itemToCopy));
 		var itemsToBeInserted = [];
 		while (count > 0) {
@@ -161,8 +149,9 @@ router.post('/item_create_copy_commit', function(req, res, next) {
 			itemsToBeInserted.push(itemToAdd);
 			count--;
 		}
-		yield col.insertMany(itemsToBeInserted);
-		res.redirect('./listing_items');
+		mongo_database.get().collection('Item').insertMany(itemsToBeInserted, function(err, result) {
+			res.redirect('./listing_items');
+		});
 	});
 });
 
@@ -226,23 +215,19 @@ router.get('/search', function(req, res, next) {
 });
 
 router.get('/item_delete', function(req, res, next) {
-	co(function*() {
-		var col = db.collection('Item');
-		var url_parts = url.parse(req.url, true);
-		var query = url_parts.query;
-		var objectId = new ObjectId(query._id)
-		console.log(JSON.stringify(query))
-		var r = yield col.deleteOne({
-			"_id": objectId
-		});
+	var url_parts = url.parse(req.url, true);
+	var query = url_parts.query;
+	var objectId = new ObjectId(query._id)
+	console.log(JSON.stringify(query))
+	mongo_database.get().collection('Item').deleteOne({
+		"_id": objectId
+	}, function(err, result) {
 		res.redirect(query.refererUrl);
 	});
 });
 
 router.get('/item_create', function(req, res, next) {
-	co(function*() {
-		var col = db.collection('FoodCategory');
-		var foodCategories = yield col.find({}).toArray();
+	mongo_database.get().collection('FoodCategory').find().toArray(function(err, foodCategories) {
 		res.render('item_creation_form', {
 			"activeTabName": "ajout_item",
 			"foodCategories": foodCategories

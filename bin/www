@@ -3,8 +3,8 @@
 /**
  * Module dependencies.
  */
-
-var app = require('../app').application;
+var mongodb = require('../mongo_database');
+var app = require('../app');
 var debug = require('debug')('stockhandler-js:server');
 var http = require('http');
 
@@ -24,11 +24,18 @@ var server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
+// Connect to the database before starting the application server.
+mongodb.connect(function(err, database) {
+  if (err) {
+    console.log(err);
+    process.exit(1);
+  }
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
+  console.log("Database connection ready");
+  server.listen(port);
+  server.on('error', onError);
+  server.on('listening', onListening);
+});
 /**
  * Normalize a port into a number, string, or false.
  */

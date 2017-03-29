@@ -4,7 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongodb = require('mongodb');
+var app;
+
+
 
 var index = require('./routes/index');
 var items = require('./routes/items');
@@ -12,9 +14,9 @@ var item = require('./routes/item');
 var storageAreas = require('./routes/storageAreas');
 var storageArea = require('./routes/storageArea');
 
-var db;
 
-var app = express();
+
+app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -53,21 +55,4 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-// Connect to the database before starting the application server.
-mongodb.MongoClient.connect(process.env.MONGODB_URI, function(err, database) {
-  if (err) {
-    console.log(err);
-    process.exit(1);
-  }
-
-  // Save database object from the callback for reuse.
-  db = database;
-  console.log("Database connection ready");
-});
-
-
-module.exports = {
-  "application": app,
-  "db": db
-};
+module.exports = app;
