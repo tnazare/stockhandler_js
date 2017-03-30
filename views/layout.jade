@@ -4,27 +4,30 @@ html
     meta(charset="utf-8")
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="apple-mobile-web-app-title" content="Congélo")
     title= title
     link(rel='shortcut icon', href='/static/favicon.ico', type='image/x-icon')
     link(rel='stylesheet', href='/static/stylesheets/bootstrap.min.css')
     link(rel='stylesheet', href='/static/stylesheets/bootstrap-responsive.min.css')
     link(rel='stylesheet', href='/static/stylesheets/style.css')
+    link(rel="apple-touch-icon-precomposed" sizes="57x57" href="/static/images/iphone_small.png")
+    link(rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/images/iphone_big.png")
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js')
     script(src='/static/javascripts/bootstrap.min.js')
   body
     ul.nav.nav-tabs
       if activeTabName == "liste"
         li.active(role="presentation")
-          a(href="/items/listing_items") Liste
+          a(href="/items/listing_items") Liste Produits
       else
         li(role="presentation")
-          a(href="/items/listing_items") Liste
+          a(href="/items/listing_items") Liste Produits
       if activeTabName == "ajout_item"
         li.active(role="presentation")
-          a(href="/items/item_create") Ajout Item
+          a(href="/items/item_create") Ajout Produit
       else
         li(role="presentation")
-          a(href="/items/item_create") Ajout Item
+          a(href="/items/item_create") Ajout Produit
       if activeTabName == "ajout_category"
         li.active(role="presentation")
           a(href="/foodcategories/foodcategory_create") Ajout Catégorie
