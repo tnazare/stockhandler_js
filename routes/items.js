@@ -14,7 +14,7 @@ var copyItem = function(itemToCopy, location) {
 		"name": itemToCopy.name,
 		"unit": itemToCopy.unit,
 		"additionDate": new Date(),
-		"deletetionDate": null,
+		"deletionDate": null,
 		"location": location,
 		"foodCategory": itemToCopy.foodCategory
 	}
@@ -29,6 +29,10 @@ router.get('/', function(req, res, next) {
 
 router.get('/listing_items', function(req, res, next) {
 	mongo_database.get().collection('Item').aggregate([{
+		$match: {
+			"deletionDate": null
+		}
+	}, {
 		$group: {
 			_id: "$name",
 			count: {
@@ -76,7 +80,8 @@ router.get('/item_group_details', function(req, res, next) {
 			"name": {
 				$regex: itemName,
 				$options: 'i'
-			}
+			},
+			"deletionDate": null
 		}
 	}, {
 		$project: {
@@ -217,15 +222,21 @@ router.get('/item_delete', function(req, res, next) {
 	var objectId = new ObjectId(query._id);
 	var itemName = query.itemName;
 	console.log(JSON.stringify(query))
-	mongo_database.get().collection('Item').deleteOne({
+	mongo_database.get().collection('Item').updateOne({
 		"_id": objectId
-	}, function(err, result) {
+	}, {
+		$set: {
+			"deletionDate": new Date()
+		}
+	}, {}, function(err, result) {
+		console.log("result of updateOne() = " + JSON.stringify(result));
 		mongo_database.get().collection('Item').aggregate([{
 			$match: {
 				"name": {
 					$regex: itemName,
 					$options: 'i'
-				}
+				},
+				"deletionDate": null
 			}
 		}]).toArray(function(err, items) {
 			if (items.length > 0) {
@@ -268,7 +279,7 @@ router.post('/item_create_commit', function(req, res, next) {
 				"unit": unit,
 				"foodCategory": foodCategory,
 				"additionDate": new Date(),
-				"deletetionDate": null
+				"deletionDate": null
 			};
 			console.log("itemToAdd = " + JSON.stringify(itemToAdd));
 			itemsToBeInserted.push(itemToAdd);
