@@ -217,7 +217,7 @@ router.post('/item_create_commit', function(req, res, next) {
 		var location = req.body["up"] != undefined ? "up" : "down";
 		var count = parseInt(req.body["count"]);
 		var foodCategoryId = new ObjectId(req.body["foodCategory"]);
-		var itemName = req.body["itemNameAlreadyThere"] != undefined ? req.body["itemNameAlreadyThere"] : req.body["itemName"];
+		var itemName = req.body["itemNameAlreadyThere"] != undefined && req.body["itemNameAlreadyThere"] != 0 ? req.body["itemNameAlreadyThere"] : req.body["itemName"];
 		var unit = req.body["unit"];
 		var foodCategory = yield mongo_database.get().collection('FoodCategory').findOne({
 			"_id": foodCategoryId
