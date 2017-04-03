@@ -8,6 +8,8 @@ block content
       dl.dl-horizontal
         dt.col-md-2 Catégorie
         dd.col-md-4 #{foodCategoryName}
+        dt.col-md-2 Unité
+        dd.col-md-4 #{unit}
       form.form-horizontal(action='./item_create_copy_commit',method='post')
         input.invisible.form-control(type="hidden" name="copyId" value="#{copyId}") 
         div.form-group.col-xs-12

@@ -124,13 +124,16 @@ router.get('/item_create_copy', function(req, res, next) {
 				},
 				"location": "$location",
 				"foodCategoryName": "$foodCategory.name",
-				"name": "$name"
+				"name": "$name",
+				"unit": "$unit"
+
 			}
 		}]).toArray();
 		res.render('item_creation_copy_form', {
 			"items": items[0],
 			"itemName": items[0].name,
 			"foodCategoryName": items[0].foodCategoryName,
+			"unit": items[0].unit,
 			"copyId": copyId
 		});
 	});
