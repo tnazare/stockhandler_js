@@ -5,9 +5,17 @@ block content
       form.form-horizontal(action='./item_create_commit',method='post')
         div.form-group
           div.col-xs-3
+            label.control-label(for="itemNameAlreadyThere") Produit existant 
+          div.col-xs-9
+            select.form-control(name="itemNameAlreadyThere" id="itemNameAlreadyThereSelect")
+              option(value="0") Sélectionner un produit connu
+              for item in itemsAlreadyThere
+                option(value="#{item._id}") #{item.name}
+        div.form-group
+          div.col-xs-3
             label.control-label(for="itemName") Nom
           div.col-xs-9
-            input.form-control(type="text" name="itemName" placeholder="Nom du produit")
+            input.form-control(type="text" name="itemName" placeholder="Nom du produit" )
         div.form-group
           div.col-xs-3
             label.control-label(for="unit") Unité

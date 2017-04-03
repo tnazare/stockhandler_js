@@ -12,15 +12,17 @@ block content
     thead
       tr
         th #
+        th Unité
         th Date Ajout
-        th Emplacement
+        th Place
         th Actions
     tbody 
       each item, i in items
         tr 
           td.col-md-1= i
-          td.col-md-3= item.additionDate
-          td.col-md-3 
+          td.col-md-3= item.unit
+          td.col-md-2= item.additionDate
+          td.col-md-1 
             span(class="glyphicon glyphicon-arrow-#{item.location}" aria-hidden="true")
           td.col-md-4
             a.btn.btn-success(href="./item_create_copy?copyId=#{item._id}&refererUrl=#{encodeURI('./item_group_details?itemName='+itemName)}" role="button")
