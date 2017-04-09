@@ -63,6 +63,10 @@ router.get('/listing_items', function(req, res, next) {
 				},
 				count: "$count"
 			}
+		}, {
+			$sort: {
+				name: 1
+			}
 		}]).toArray();
 		res.render('listing_items', {
 			"items": items,
@@ -141,12 +145,12 @@ router.get('/item_create_copy', function(req, res, next) {
 
 router.post('/item_create_copy_commit', function(req, res, next) {
 	co(function*() {
-		var location = req.body["up"] != undefined ? "up" : "down";
+		var up = req.body["up"];
+		var down = req.body["down"];
+		var door = req.body["door"];
+		var location = up != undefined ? "up" : down != undefined ? down : door;
 		var count = parseInt(req.body["count"]);
 		var copyId = new ObjectId(req.body["copyId"]);
-		console.log("location = " + location);
-		console.log("count = " + count);
-		console.log("copyId = " + copyId);
 		var itemToCopy = yield mongo_database.get().collection('Item').findOne({
 			"_id": copyId
 		});
@@ -217,7 +221,10 @@ router.get('/item_create', function(req, res, next) {
 router.post('/item_create_commit', function(req, res, next) {
 	co(function*() {
 		console.log("req.body = " + JSON.stringify(req.body));
-		var location = req.body["up"] != undefined ? "up" : "down";
+		var up = req.body["up"];
+		var down = req.body["down"];
+		var door = req.body["door"];
+		var location = up != undefined ? "up" : down != undefined ? down : door;
 		var count = parseInt(req.body["count"]);
 		var foodCategoryId = new ObjectId(req.body["foodCategory"]);
 		var itemName = req.body["itemNameAlreadyThere"] != undefined && req.body["itemNameAlreadyThere"] != 0 ? req.body["itemNameAlreadyThere"] : req.body["itemName"];
