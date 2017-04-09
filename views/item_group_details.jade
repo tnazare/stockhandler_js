@@ -23,7 +23,8 @@ block content
           td.col-md-3= item.unit
           td.col-md-2= item.additionDate
           td.col-md-1 
-            span(class="glyphicon glyphicon-arrow-#{item.location}" aria-hidden="true")
+            span(class="glyphicon" aria-hidden="true")
+              img(src="/static/images/#{item.location}.png" height="55" width="55")
           td.col-md-4
             a.btn.btn-success(href="./item_create_copy?copyId=#{item._id}&refererUrl=#{encodeURI('./item_group_details?itemName='+itemName)}" role="button")
               span.glyphicon.glyphicon-plus(aria-hidden="true")

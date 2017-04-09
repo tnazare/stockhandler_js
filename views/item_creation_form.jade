@@ -32,12 +32,18 @@ block content
           div.col-xs-3
             label.control-label(for="buttons") Lieu
           div.btn-group.col-xs-9(data-toggle="buttons")
-            label.btn 
-              span(class="glyphicon glyphicon-arrow-up" aria-hidden="true")
+            label.btn
+              span(class="glyphicon " aria-hidden="true")
+                img(src="/static/images/up.png" height="55" width="55")
                 input(type="radio" name="up" id="up" autocomplete="off" data-toggle="button")
-            label.btn 
-              span(class="glyphicon glyphicon-arrow-down" aria-hidden="true")
+            label.btn
+              span(class="glyphicon " aria-hidden="true")
+                img(src="/static/images/down.png" height="55" width="55")
                 input(type="radio" name="down" id="down" autocomplete="off" data-toggle="button")
+            label.btn
+              span(class="glyphicon " aria-hidden="true")
+                img(src="/static/images/door.png" height="55" width="55")
+                input(type="radio" name="door" id="door" autocomplete="off" data-toggle="button")
         div.form-group
           div.col-xs-3
             label.control-label(for="buttons") Nombre

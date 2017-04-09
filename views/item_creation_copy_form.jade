@@ -15,11 +15,17 @@ block content
         div.form-group.col-xs-12
           div.btn-group(data-toggle="buttons")
             label.btn
-              span(class="glyphicon glyphicon-arrow-up" aria-hidden="true")
+              span(class="glyphicon " aria-hidden="true")
+                img(src="/static/images/up.png" height="55" width="55")
                 input(type="radio" name="up" id="up" autocomplete="off" data-toggle="button")
-            label.btn 
-              span(class="glyphicon glyphicon-arrow-down" aria-hidden="true")
+            label.btn
+              span(class="glyphicon " aria-hidden="true")
+                img(src="/static/images/down.png" height="55" width="55")
                 input(type="radio" name="down" id="down" autocomplete="off" data-toggle="button")
+            label.btn
+              span(class="glyphicon " aria-hidden="true")
+                img(src="/static/images/door.png" height="55" width="55")
+                input(type="radio" name="door" id="door" autocomplete="off" data-toggle="button")
         div.form-group.col-xs-12
           select.form-control(name="count")
             option(selected) 1
