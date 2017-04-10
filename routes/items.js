@@ -148,7 +148,7 @@ router.post('/item_create_copy_commit', function(req, res, next) {
 		var up = req.body["up"];
 		var down = req.body["down"];
 		var door = req.body["door"];
-		var location = up != undefined ? "up" : down != undefined ? down : door;
+		var location = up == "on" ? "up" : down == "on" ? "down" : "door";
 		var count = parseInt(req.body["count"]);
 		var copyId = new ObjectId(req.body["copyId"]);
 		var itemToCopy = yield mongo_database.get().collection('Item').findOne({
@@ -224,7 +224,7 @@ router.post('/item_create_commit', function(req, res, next) {
 		var up = req.body["up"];
 		var down = req.body["down"];
 		var door = req.body["door"];
-		var location = up != undefined ? "up" : down != undefined ? down : door;
+		var location = up == "on" ? "up" : down == "on" ? "down" : "door";
 		var count = parseInt(req.body["count"]);
 		var foodCategoryId = new ObjectId(req.body["foodCategory"]);
 		var itemName = req.body["itemNameAlreadyThere"] != undefined && req.body["itemNameAlreadyThere"] != 0 ? req.body["itemNameAlreadyThere"] : req.body["itemName"];
